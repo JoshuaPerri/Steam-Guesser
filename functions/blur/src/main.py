@@ -10,7 +10,7 @@ def main(context):
     #     im = im.filter(ImageFilter.GaussianBlur(radius=50))
     #     im.save("test.jpg")
 
-    context.log(context.__dict__)
+    context.log(context.req.bodyText)
 
     if context.req.path == "/ping":
         # Use res object to respond with text(), json(), or binary()

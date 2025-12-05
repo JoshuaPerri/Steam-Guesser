@@ -56,6 +56,13 @@ function set_name(name) {
     nameElement.textContent = name;
 }
 
+const dateElement = document.getElementById("date");
+const options = {year: 'numeric', month: 'long', day: 'numeric'};
+function set_date(dateString) {
+    let date = new Date(dateString);
+    dateElement.textContent = date.toLocaleString("en-US", options);
+}
+
 
 
 
@@ -80,6 +87,8 @@ async function init() {
         set_publisher(row["publishers"]);
         set_price(row["price-CDN"]);
         set_image(row["image-url"]);
+        set_date(row["date"]);
+
     } catch (err) {
         console.log(err)
     }

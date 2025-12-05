@@ -1,0 +1,87 @@
+import { Client, Query, TablesDB } from "appwrite";
+
+const reviewThresholds = [0, 20, 40, 70, 80, 95];
+const reviewScores = [
+    "Overwhelmingly Negative",
+    "Mostly Negative",
+    "Mixed",
+    "Mostly Positive",
+    "Very Positive",
+    "Overwhelmingly Positive",
+];
+
+function set_reviews(percent, total) {
+    for (let i=0; i < reviewThresholds.length-1; i++) {
+        if (percent >= reviewThresholds[i] && percent < reviewThresholds[i+1]) {
+            reviewElement.textContent = reviewScores[i] + " (" + total.toLocaleString() + ")";
+            return;
+        }
+    }
+    if (percent >= reviewThresholds[5]) {
+        reviewElement.textContent = reviewScores[5];
+    }
+}
+
+const tagsElement = document.getElementById("tags-list");
+function set_tags(tags) {
+    let tagsHTML = [];
+    tags.forEach(tag => {
+        tagsHTML.push(`<li>${tag}</li>`);
+    });
+    tagsElement.innerHTML = tagsHTML.join("");
+}
+
+const developerElement = document.getElementById("developer");
+function set_developer(developer) {
+    developerElement.textContent = developer;
+}
+
+const publisherElement = document.getElementById("publisher");
+function set_publisher(publisher) {
+    publisherElement.textContent = publisher;
+}
+
+const priceElement = document.getElementById("price");
+function set_price(price) {
+    priceElement.textContent = price.toLocaleString();
+}
+
+const imageElement = document.getElementById("cover-image");
+function set_image(url) {
+    imageElement.setAttribute("src", url);
+}
+
+const nameElement = document.getElementById("game-name");
+function set_name(name) {
+    nameElement.textContent = name;
+}
+
+
+
+
+const client = new Client()
+    .setEndpoint(import.meta.env.VITE_APPWRITE_ENDPOINT)
+    .setProject(import.meta.env.VITE_APPWRITE_PROJECT_ID);
+
+const tablesDB = new TablesDB(client);
+
+async function init() {
+    try {
+        const response = await tablesDB.listRows({
+            databaseId: "6931cde4003199800b9d",
+            tableId: "games",
+            queries: [Query.orderDesc("$createdAt"), Query.limit(1)]
+        });
+        let row = response.rows[0];
+        set_name(row["name"])
+        set_reviews(row["positive-percent"], row["total-reviews"]);
+        set_tags(row["tags"]);
+        set_developer(row["developers"]);
+        set_publisher(row["publishers"]);
+        set_price(row["price-CDN"]);
+        set_image(row["image-url"]);
+    } catch (err) {
+        console.log(err)
+    }
+}
+init();

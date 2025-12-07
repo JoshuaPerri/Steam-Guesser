@@ -6,14 +6,14 @@ from io import BytesIO
 def main(context):
     response = requests.get("https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/1030300/7983574d464e6559ac7e24275727f73a8bcca1f3/header.jpg")
 
+    context.log(context.res)
+
     with Image.open(BytesIO(response.content)) as im:
         im = im.filter(ImageFilter.GaussianBlur(radius=50))
         output = BytesIO()
         im.save(output, format='JPEG')
-        context.res.headers["Content-Type"] = 'image/jpeg'
+        context.res["Content-Type"] = 'image/jpeg'
         return context.res.binary(output.getvalue())
-
-    # context.log(context.req.body_text)
 
     if context.req.path == "/ping":
         # Use res object to respond with text(), json(), or binary()

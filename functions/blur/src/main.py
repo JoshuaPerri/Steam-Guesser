@@ -10,9 +10,10 @@ def main(context):
         im = im.filter(ImageFilter.GaussianBlur(radius=50))
         output = BytesIO()
         im.save(output, format='JPEG')
+        context.res.headers["Content-Type"] = 'image/jpeg'
         return context.res.binary(output.getvalue())
 
-    context.log(context.req.body_text)
+    # context.log(context.req.body_text)
 
     if context.req.path == "/ping":
         # Use res object to respond with text(), json(), or binary()

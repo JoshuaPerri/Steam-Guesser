@@ -1,6 +1,6 @@
 from appwrite.client import Client
 from appwrite.services.tables_db import TablesDB
-from appwrite.services.query import Query
+from appwrite.query import Query
 import os
 from PIL import Image, ImageFilter
 import requests

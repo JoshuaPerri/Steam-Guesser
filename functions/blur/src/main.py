@@ -11,7 +11,8 @@ def main(context):
     # Set project and set API key
     client = (
         Client()
-            .set_project("https://" + os.environ["APPWRITE_FUNCTION_PROJECT_ID"])
+            .set_endpoint(os.environ["APPWRITE_FUNCTION_API_ENDPOINT"])
+            .set_project(os.environ["APPWRITE_FUNCTION_PROJECT_ID"])
             .set_key(context.req.headers["x-appwrite-key"])
     )
 

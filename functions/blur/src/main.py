@@ -19,7 +19,7 @@ def main(context):
     response = tablesDB.list_rows(
         database_id = "6931cde4003199800b9d",
         table_id = "games",
-        queries = [Query.orderDesc("$createdAt"), Query.limit(1)]
+        queries = [Query.order_desc("$createdAt"), Query.limit(1)]
     )
     context.log(response["rows"][0]["image-url"])
     # try:

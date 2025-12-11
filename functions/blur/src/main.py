@@ -20,8 +20,11 @@ def main(context):
     if context.req.path == "/game":
         pass
     elif context.req.path == "/image":
-
-        rowId = context.req.body_json["id"]
+        
+        try:
+            rowId = context.req.body_json["id"]
+        except KeyError:
+            rowId = "693a3e77787683253b37"
 
         response = tablesDB.list_rows(
             database_id = "6931cde4003199800b9d",

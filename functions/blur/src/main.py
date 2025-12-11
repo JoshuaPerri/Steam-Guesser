@@ -21,10 +21,9 @@ def main(context):
         pass
     elif context.req.path == "/image":
         
-        try:
-            rowId = context.req.body_json["id"]
-        except KeyError:
-            rowId = "693a3e77787683253b37"
+        rowId = context.req.body_text
+        if rowId == "":
+            rowId = "693a3e77785892a9c4d5"
 
         response = tablesDB.list_rows(
             database_id = "6931cde4003199800b9d",
@@ -42,7 +41,8 @@ def main(context):
             output = BytesIO()
             im.save(output, format='JPEG')
             return context.res.binary(output.getvalue(), 200, {"content-type": "image/jpeg"})
-
+    else:
+        return context.res.empty()
     # response = tablesDB.list_rows(
     #     database_id = "6931cde4003199800b9d",
     #     table_id = "games",

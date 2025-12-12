@@ -81,6 +81,7 @@ async function init() {
     // });
     const response = await fetch("https://69330db900213a8cdc7a.tor.appwrite.run/game");
     let row = response;
+    console.log(row);
     set_name(row["name"])
     set_reviews(row["positive-percent"], row["total-reviews"]);
     set_tags(row["tags"]);

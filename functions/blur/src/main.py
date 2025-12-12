@@ -4,6 +4,7 @@ from appwrite.query import Query
 import os
 from PIL import Image, ImageFilter
 import requests
+import json
 from io import BytesIO
 
 def main(context):
@@ -21,9 +22,12 @@ def main(context):
         pass
     elif context.req.path == "/image":
         
-        rowId = context.req.body_text
-        if rowId == "":
+        try:
+            rowId = context.req.query["id"]
+        except KeyError:
             rowId = "693a3e77785892a9c4d5"
+        # if rowId == "":
+        #     rowId = "693a3e77785892a9c4d5"
 
         response = tablesDB.list_rows(
             database_id = "6931cde4003199800b9d",

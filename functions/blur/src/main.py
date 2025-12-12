@@ -19,15 +19,25 @@ def main(context):
     tablesDB = TablesDB(client)
 
     if context.req.path == "/game":
-        pass
+
+        response = tablesDB.list_rows(
+            database_id = "6931cde4003199800b9d",
+            table_id = "games",
+            queries = [
+                Query.greater_than("total-reviews", 1500), 
+                Query.order_random(), 
+                Query.limit(1)
+            ]
+        )
+
+        return context.res.json(json.dumps(response["rows"][0]))
+
     elif context.req.path == "/image":
         
         try:
             rowId = context.req.query["id"]
         except KeyError:
             rowId = "693a3e77785892a9c4d5"
-        # if rowId == "":
-        #     rowId = "693a3e77785892a9c4d5"
 
         response = tablesDB.list_rows(
             database_id = "6931cde4003199800b9d",
@@ -35,12 +45,7 @@ def main(context):
             queries = [Query.select(["image-url"]), Query.equal("$id", [rowId])]
         )
         url = response["rows"][0]["image-url"]
-        context.log(url)
-        context.log(context.req.body_text)
-        context.log(context.req.query)
-        context.log(context.req.query_string)
-            
-        
+
         response = requests.get(url)
 
         with Image.open(BytesIO(response.content)) as im:

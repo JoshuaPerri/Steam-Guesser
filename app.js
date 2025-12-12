@@ -79,17 +79,18 @@ async function init() {
     //     tableId: "games",
     //     queries: [Query.orderDesc("$createdAt"), Query.limit(1)]
     // });
-    const response = await fetch("https://69330db900213a8cdc7a.tor.appwrite.run/game");
-    let row = response;
-    console.log(row);
-    set_name(row["name"])
-    set_reviews(row["positive-percent"], row["total-reviews"]);
-    set_tags(row["tags"]);
-    set_developer(row["developers"]);
-    set_publisher(row["publishers"]);
-    set_price(row["price-CDN"]);
-    set_image(row["image-url"]);
-    set_date(row["date"]);
+    fetch("https://69330db900213a8cdc7a.tor.appwrite.run/game")
+        .then((response) => response.json())
+        .then((data) => {
+            set_name(data["name"])
+            set_reviews(data["positive-percent"], data["total-reviews"]);
+            set_tags(data["tags"]);
+            set_developer(data["developers"]);
+            set_publisher(data["publishers"]);
+            set_price(data["price-CDN"]);
+            set_image(data["image-url"]);
+            set_date(data["date"]);
+    });
 }
 
 document.addEventListener("DOMContentLoaded", () => {

@@ -74,25 +74,23 @@ function set_date(dateString) {
 // const tablesDB = new TablesDB(client);
 
 async function init() {
-    try {
-        // const response = await tablesDB.listRows({
-        //     databaseId: "6931cde4003199800b9d",
-        //     tableId: "games",
-        //     queries: [Query.orderDesc("$createdAt"), Query.limit(1)]
-        // });
-        const response = await fetch("https://69330db900213a8cdc7a.tor.appwrite.run/game")
-        let row = response;
-        set_name(row["name"])
-        set_reviews(row["positive-percent"], row["total-reviews"]);
-        set_tags(row["tags"]);
-        set_developer(row["developers"]);
-        set_publisher(row["publishers"]);
-        set_price(row["price-CDN"]);
-        set_image(row["image-url"]);
-        set_date(row["date"]);
-
-    } catch (err) {
-        console.log(err)
-    }
+    // const response = await tablesDB.listRows({
+    //     databaseId: "6931cde4003199800b9d",
+    //     tableId: "games",
+    //     queries: [Query.orderDesc("$createdAt"), Query.limit(1)]
+    // });
+    const response = await fetch("https://69330db900213a8cdc7a.tor.appwrite.run/game");
+    let row = response;
+    set_name(row["name"])
+    set_reviews(row["positive-percent"], row["total-reviews"]);
+    set_tags(row["tags"]);
+    set_developer(row["developers"]);
+    set_publisher(row["publishers"]);
+    set_price(row["price-CDN"]);
+    set_image(row["image-url"]);
+    set_date(row["date"]);
 }
-init();
+
+document.addEventListener("DOMContentLoaded", () => {
+    init();
+});

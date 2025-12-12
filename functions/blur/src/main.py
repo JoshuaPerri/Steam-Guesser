@@ -32,7 +32,8 @@ def main(context):
 
         return context.res.json(
             json.dumps(response["rows"][0]), 200, {
-                "Access-Control-Allow-Origin": "https://steam-guesser.appwrite.network/",
+                # "Access-Control-Allow-Origin": "https://steam-guesser.appwrite.network",
+                'Access-Control-Allow-Origin': '*',
         })
 
     elif context.req.path == "/image":
@@ -56,8 +57,9 @@ def main(context):
             output = BytesIO()
             im.save(output, format='JPEG')
             return context.res.binary(output.getvalue(), 200, {
-                "content-type": "image/jpeg",
-                "Access-Control-Allow-Origin": "https://steam-guesser.appwrite.network/",
+                'content-type': 'image/jpeg',
+                # "Access-Control-Allow-Origin": "https://steam-guesser.appwrite.network",
+                'Access-Control-Allow-Origin': '*',
             })
     else:
         return context.res.empty()

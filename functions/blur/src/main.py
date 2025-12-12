@@ -33,6 +33,7 @@ def main(context):
         url = response["rows"][0]["image-url"]
         context.log(url)
         context.log(context.req.body_text)
+        context.log(context.req.body_json)
             
         
         response = requests.get(url)

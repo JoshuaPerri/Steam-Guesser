@@ -30,7 +30,10 @@ def main(context):
             ]
         )
 
-        return context.res.json(json.dumps(response["rows"][0]))
+        return context.res.json(
+            json.dumps(response["rows"][0]), 200, {
+                "Access-Control-Allow-Origin": ".appwrite.run",
+        })
 
     elif context.req.path == "/image":
         
@@ -52,7 +55,10 @@ def main(context):
             im = im.filter(ImageFilter.GaussianBlur(radius=50))
             output = BytesIO()
             im.save(output, format='JPEG')
-            return context.res.binary(output.getvalue(), 200, {"content-type": "image/jpeg"})
+            return context.res.binary(output.getvalue(), 200, {
+                "content-type": "image/jpeg",
+                "Access-Control-Allow-Origin": ".appwrite.run",
+            })
     else:
         return context.res.empty()
     # response = tablesDB.list_rows(

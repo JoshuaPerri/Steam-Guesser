@@ -10,6 +10,7 @@ const reviewScores = [
     "Overwhelmingly Positive",
 ];
 
+const reviewElement = document.getElementById("review-data")
 function set_reviews(percent, total) {
     for (let i=0; i < reviewThresholds.length-1; i++) {
         if (percent >= reviewThresholds[i] && percent < reviewThresholds[i+1]) {
@@ -66,20 +67,21 @@ function set_date(dateString) {
 
 
 
-const client = new Client()
-    .setEndpoint(import.meta.env.VITE_APPWRITE_ENDPOINT)
-    .setProject(import.meta.env.VITE_APPWRITE_PROJECT_ID);
+// const client = new Client()
+//     .setEndpoint(import.meta.env.VITE_APPWRITE_ENDPOINT)
+//     .setProject(import.meta.env.VITE_APPWRITE_PROJECT_ID);
 
-const tablesDB = new TablesDB(client);
+// const tablesDB = new TablesDB(client);
 
 async function init() {
     try {
-        const response = await tablesDB.listRows({
-            databaseId: "6931cde4003199800b9d",
-            tableId: "games",
-            queries: [Query.orderDesc("$createdAt"), Query.limit(1)]
-        });
-        let row = response.rows[0];
+        // const response = await tablesDB.listRows({
+        //     databaseId: "6931cde4003199800b9d",
+        //     tableId: "games",
+        //     queries: [Query.orderDesc("$createdAt"), Query.limit(1)]
+        // });
+        const response = await fetch("https://69330db900213a8cdc7a.tor.appwrite.run/game")
+        let row = response;
         set_name(row["name"])
         set_reviews(row["positive-percent"], row["total-reviews"]);
         set_tags(row["tags"]);

@@ -30,9 +30,12 @@ def main(context):
             ]
         )
 
+        context.log(response)
+
         return context.res.json(
             json.dumps(response["rows"][0]), 200, {
                 # "Access-Control-Allow-Origin": "https://steam-guesser.appwrite.network",
+                'content-type': 'application/json',
                 'Access-Control-Allow-Origin': '*',
         })
 

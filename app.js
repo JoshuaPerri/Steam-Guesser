@@ -20,6 +20,7 @@ function set_reviews(percent, total) {
     }
     if (percent >= reviewThresholds[5]) {
         reviewElement.textContent = reviewScores[5] + " (" + total.toLocaleString() + ")";
+    }
 }
 
 const tagsElement = document.getElementById("tags-list");

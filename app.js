@@ -19,8 +19,7 @@ function set_reviews(percent, total) {
         }
     }
     if (percent >= reviewThresholds[5]) {
-        reviewElement.textContent = reviewScores[5];
-    }
+        reviewElement.textContent = reviewScores[5] + " (" + total.toLocaleString() + ")";
 }
 
 const tagsElement = document.getElementById("tags-list");
@@ -82,7 +81,7 @@ async function init() {
     fetch("https://69330db900213a8cdc7a.tor.appwrite.run/game")
         .then((response) => response.json())
         .then((data) => {
-            set_name(data["name"])
+            // set_name(data["name"])
             set_reviews(data["positive-percent"], data["total-reviews"]);
             set_tags(data["tags"]);
             set_developer(data["developers"]);

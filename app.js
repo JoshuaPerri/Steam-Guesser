@@ -52,11 +52,6 @@ function set_image(url) {
     imageElement.setAttribute("src", url);
 }
 
-const nameElement = document.getElementById("game-name");
-function set_name(name) {
-    nameElement.textContent = name;
-}
-
 const dateElement = document.getElementById("date");
 const options = {year: 'numeric', month: 'long', day: 'numeric'};
 function set_date(dateString) {
@@ -73,6 +68,7 @@ function set_date(dateString) {
 
 // const tablesDB = new TablesDB(client);
 
+let game = ""
 async function init() {
     // const response = await tablesDB.listRows({
     //     databaseId: "6931cde4003199800b9d",
@@ -82,7 +78,7 @@ async function init() {
     fetch("https://69330db900213a8cdc7a.tor.appwrite.run/game")
         .then((response) => response.json())
         .then((data) => {
-            // set_name(data["name"])
+            game = data["name"];
             set_reviews(data["positive-percent"], data["total-reviews"]);
             set_tags(data["tags"]);
             set_developer(data["developers"]);
@@ -91,8 +87,26 @@ async function init() {
             set_image(data["image-url"]);
             set_date(data["date"]);
     });
+    // game = "Hollow Knight: Silksong"
+    // set_reviews(92, 112292);
+    // set_tags(["Metroidvania", "Difficult", "Indie", "Souls-like", "Great Soundtrack", "2D", "Singleplayer", "Platformer", "Exploration", "Female Protagonist", "Adventure", "Beautiful", "Atmospheric", "Story Rich", "Sequel", "Hand-drawn", "Action", "Open World", "Multiple Endings", "Cute"]);
+    // set_developer("Team Cherry");
+    // set_publisher("Team Cherry");
+    // set_price(25.99);
+    // set_image("https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/1030300/7983574d464e6559ac7e24275727f73a8bcca1f3/header.jpg");
+    // set_date("2025-09-04");
 }
 
-document.addEventListener("DOMContentLoaded", () => {
-    init();
+document.addEventListener("DOMContentLoaded", init);
+
+const answerBox = document.getElementById("answer-box");
+document.getElementById("submit-button").addEventListener("click", (e) => {
+    let answer = answerBox.value
+    // if (answer === game) {
+    //     alert(true);
+    // } else {
+    //     alert(false);
+    // }
+    answerBox.setAttribute("disabled", "true")
+    imageElement.classList = ""
 });

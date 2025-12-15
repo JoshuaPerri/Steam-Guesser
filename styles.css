@@ -21,11 +21,14 @@ body {
     overflow: hidden;
 }
 
-img {
+#cover-img {
     position: absolute;
     left: 0px;
     top: 0px;
-    filter: blur(50px)
+}
+
+.blurred {
+    filter: blur(50px);
 }
 
 .image-blur {
@@ -38,7 +41,7 @@ img {
     opacity: 0.0;
 }
 
-#buy-button {
+#submit-button {
     font-size: 12px;
     border-radius: 2px;
     border: none;
@@ -50,7 +53,8 @@ img {
     background: linear-gradient( to right, #75b022 5%, #588a1b 95%);
     text-shadow: 1px 1px 0px rgba( 0, 0, 0, 0.3 );
 
-    padding: 10px 15px;
+    /* padding: 10px 15px; */
+    padding: 10px 30px;
 }
 
 #buy-group {
@@ -78,12 +82,36 @@ img {
 }
 
 .buy-game-text {
+    margin-top: 1px;
+    margin-right: 5px;
+    margin-left: 5px;
+}
+
+.answer-group {
+    border: 1px solid #2e3133;
+    background-color: #566573;
+    color: white;
+    display: flex;
     position: absolute;
     top: 20px;
     left: 20px;
-    color: white;
     font-size: 20px;
 }
+
+#answer-box {
+    /* linear-gradient( -60deg, rgba(226,244,255,0.3) 5%,rgba(84, 107, 115, 0.3) 95%) */
+    background-color: inherit;
+    border: none;
+    width: 400px;
+    color: white;
+    font-size: 20px;
+    cursor: text;
+}
+
+#answer-box:focus {
+    outline: none;
+}
+
 
 #game-details-container {
     display: grid;

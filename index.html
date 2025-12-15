@@ -9,15 +9,11 @@
     <div id="left-column">
         <div id="game-details-container" class="center">
             <div class="image-container">
-                <img id="cover-image">
+                <img id="cover-image" class="blurred">
             </div>
             <div class="details-container">
                 <div id="instructions-item">
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
-                    labore et
-                    dolore magna aliqua.
-                    Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
-                    consequat.
+                    Use the information provided to determine what the game is. Information is accurate as of November 2025.
                 </div>
                 <div id="reviews-item" class="details-item">
                     <div class="details-label">English Reviews:</div>
@@ -39,10 +35,13 @@
             </div>
         </div>
         <div class="buy-game-panel">
-            <div class="buy-game-text">Buy <span id="game-name"></span></div>
+            <div class="answer-group">
+                <div class="buy-game-text">Buy <span id="game-name"></span></div>
+                <input id="answer-box" type="text" placeholder="Elden Ring...">
+            </div>
             <div id="buy-group">
                 <label id="price-label">CDN$ <span id="price"></span></label>
-                <a id="buy-button" type="button">Add to Cart</a>
+                <a id="submit-button" type="button">Submit</a>
             </div>
         </div>
     </div>

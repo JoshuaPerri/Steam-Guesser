@@ -100,13 +100,15 @@ async function init() {
 document.addEventListener("DOMContentLoaded", init);
 
 const answerBox = document.getElementById("answer-box");
+const nameElement = document.getElementById("name-container");
 document.getElementById("submit-button").addEventListener("click", (e) => {
-    let answer = answerBox.value
+    let answer = answerBox.value;
     // if (answer === game) {
     //     alert(true);
     // } else {
     //     alert(false);
     // }
-    answerBox.setAttribute("disabled", "true")
-    imageElement.classList = ""
+    answerBox.setAttribute("disabled", "true");
+    imageElement.classList = "";
+    nameElement.innerHTML = game;
 });

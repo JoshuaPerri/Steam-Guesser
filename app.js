@@ -101,13 +101,14 @@ document.addEventListener("DOMContentLoaded", init);
 
 const answerBox = document.getElementById("answer-box");
 const nameElement = document.getElementById("name-container");
+const answerGroup = document.querySelector(".answer-group");
 document.getElementById("submit-button").addEventListener("click", (e) => {
     let answer = answerBox.value;
-    // if (answer === game) {
-    //     alert(true);
-    // } else {
-    //     alert(false);
-    // }
+    if (answer === game) {
+        answerGroup.classList += " correct"
+    } else {
+        answerGroup.classList += " incorrect"
+    }
     answerBox.setAttribute("disabled", "true");
     imageElement.classList = "";
     nameElement.innerHTML = game;

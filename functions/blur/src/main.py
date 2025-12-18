@@ -1,11 +1,12 @@
-from appwrite.client import Client
-from appwrite.services.tables_db import TablesDB
-from appwrite.query import Query
+from appwrite.client import Client # pyright: ignore[reportMissingImports]
+from appwrite.services.tables_db import TablesDB # pyright: ignore[reportMissingImports]
+from appwrite.query import Query # pyright: ignore[reportMissingImports]
 import os
 from PIL import Image, ImageFilter
 import requests
 import json
 from io import BytesIO
+import Levenshtein # pyright: ignore[reportMissingImports]
 
 def main(context):
     
@@ -61,6 +62,47 @@ def main(context):
                 # "Access-Control-Allow-Origin": "https://steam-guesser.appwrite.network",
                 'Access-Control-Allow-Origin': '*',
             })
+    
+    elif context.req.path == "/guess":
+
+        guess = ""
+        try:
+            gameID = context.req.query["id"]
+            guess = context.req.query["guess"]
+        except KeyError:
+            gameID = context.req.query["id"]
+            guess = "693a3e77785892a9c4d5"
+        
+        # Check if the hidden game is the same as the guess
+        response = tablesDB.list_rows(
+            database_id = "6931cde4003199800b9d",
+            table_id = "games",
+            queries = [Query.select(["name", "image-url"]), Query.equal("$id", [gameID])]
+        )
+        correct_name = response["rows"][0]["name"]
+        correct_url = response["rows"][0]["image-url"]
+
+        if correct_name == guess:
+            # Return correct
+            return
+        
+        # Check if the guess exactly matches some other game
+        response = tablesDB.list_rows(
+            database_id = "6931cde4003199800b9d",
+            table_id = "games",
+            queries = [Query.select(["$id"]), Query.equal("name", [guess]), Query.limit(1)]
+        )
+        hits = len(response["rows"])
+        
+        if hits > 0:
+            # Return incorrect
+            return
+
+
+
+        # If too different, return
+        # If similar enough...
+
     else:
         return context.res.empty()
     # response = tablesDB.list_rows(

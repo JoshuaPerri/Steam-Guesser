@@ -64,7 +64,7 @@ body {
     background-color: black;
     width: fit-content;
     top: 80%;
-    left: 72%;
+    right: 1%;
 }
 
 #price-label {

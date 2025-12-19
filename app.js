@@ -1,5 +1,3 @@
-import { Client, Query, TablesDB } from "appwrite";
-
 const reviewThresholds = [0, 20, 40, 70, 80, 95];
 const reviewScores = [
     "Overwhelmingly Negative",
@@ -59,42 +57,58 @@ function set_date(dateString) {
     dateElement.textContent = date.toLocaleString("en-US", options);
 }
 
+function days_since(start) {
+    const dayLength = 24 * 60 * 60 * 1000;
+    const now = new Date();
+
+    return Math.round(Math.abs((start - now) / dayLength));
+}
+
+async function get_games_list() {
+    return await (await fetch("json/games.json")).json()
+}
+
+async function get_tags_list() {
+    return await (await fetch("json/tags.json")).json()
+}
+
+async function get_puzzle_list() {
+    return await (await fetch("json/order.json")).json()
+}
+
+function create_tag_sublist(indexList, tagList) {
+    let sublist = [];
+    for (let i = 0; i < indexList.length; i++) {
+        sublist.push(tagList[indexList[i]]);
+    }
+    return sublist;
+}
 
 
-
-// const client = new Client()
-//     .setEndpoint(import.meta.env.VITE_APPWRITE_ENDPOINT)
-//     .setProject(import.meta.env.VITE_APPWRITE_PROJECT_ID);
-
-// const tablesDB = new TablesDB(client);
-
-let game = ""
+let gamesData = [];
+let tagsList = [];
+let gameNum = 0;
 async function init() {
-    // const response = await tablesDB.listRows({
-    //     databaseId: "6931cde4003199800b9d",
-    //     tableId: "games",
-    //     queries: [Query.orderDesc("$createdAt"), Query.limit(1)]
-    // });
-    fetch("https://69330db900213a8cdc7a.tor.appwrite.run/game")
-        .then((response) => response.json())
-        .then((data) => {
-            game = data["name"];
-            set_reviews(data["positive-percent"], data["total-reviews"]);
-            set_tags(data["tags"]);
-            set_developer(data["developers"]);
-            set_publisher(data["publishers"]);
-            set_price(data["price-CDN"]);
-            set_image(data["image-url"]);
-            set_date(data["date"]);
-    });
-    // game = "Hollow Knight: Silksong"
-    // set_reviews(92, 112292);
-    // set_tags(["Metroidvania", "Difficult", "Indie", "Souls-like", "Great Soundtrack", "2D", "Singleplayer", "Platformer", "Exploration", "Female Protagonist", "Adventure", "Beautiful", "Atmospheric", "Story Rich", "Sequel", "Hand-drawn", "Action", "Open World", "Multiple Endings", "Cute"]);
-    // set_developer("Team Cherry");
-    // set_publisher("Team Cherry");
-    // set_price(25.99);
-    // set_image("https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/1030300/7983574d464e6559ac7e24275727f73a8bcca1f3/header.jpg");
-    // set_date("2025-09-04");
+
+    let params = new URLSearchParams(document.location.search);
+    gameNum = params.get("game");
+
+    if (gameNum === null) {
+        let puzzleOrder = await get_puzzle_list();
+        gameNum = puzzleOrder[days_since(new Date(2025, 12, 19))];
+    }
+
+    gamesData = await get_games_list();
+    tagsList  = await get_tags_list();
+
+    let gameData = gamesData[gameNum]
+    set_reviews(gameData[5], gameData[4]);
+    set_tags(create_tag_sublist(gameData[8], tagsList));
+    set_developer(gameData[6]);
+    set_publisher(gameData[7]);
+    set_price(gameData[2]);
+    set_image("https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/" + gameData[9]);
+    set_date(gameData[3]);
 }
 
 document.addEventListener("DOMContentLoaded", init);
@@ -104,12 +118,12 @@ const nameElement = document.getElementById("name-container");
 const answerGroup = document.querySelector(".answer-group");
 document.getElementById("submit-button").addEventListener("click", (e) => {
     let answer = answerBox.value;
-    if (answer === game) {
+    if (answer === gamesData[gameNum][0]) {
         answerGroup.classList += " correct"
     } else {
         answerGroup.classList += " incorrect"
     }
     answerBox.setAttribute("disabled", "true");
     imageElement.classList = "";
-    nameElement.innerHTML = game;
+    nameElement.innerHTML = gamesData[gameNum][0];
 });

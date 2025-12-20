@@ -41,8 +41,19 @@ function set_publisher(publisher) {
 }
 
 const priceElement = document.getElementById("price");
+const labelElement = document.getElementById("price-label");
 function set_price(price) {
-    priceElement.textContent = price.toLocaleString();
+    if (price === 0) {
+        priceElement.textContent = "Free";
+    } else if (price === -1) {
+        labelElement.textContent = "No Longer for Sale";
+    } else if (price === -2) {
+        labelElement.textContent = "Only in Bundle";
+    } else if (price === -3) {
+        labelElement.textContent = "Only in Subscription";
+    } else {
+        priceElement.textContent = price.toLocaleString();
+    }
 }
 
 const imageElement = document.getElementById("cover-image");

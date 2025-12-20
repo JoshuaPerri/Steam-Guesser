@@ -213,7 +213,7 @@ li.suggestion-item:nth-child(even) {
     color: white;
     font-size: inherit;
     width: 100%;
-    align-items: left;
+    text-align: left;
 }
 
 .suggestion-button:hover {

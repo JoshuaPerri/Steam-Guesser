@@ -56,7 +56,7 @@ function set_price(price) {
     }
 }
 
-const imageElement = document.getElementById("cover-image");
+// const imageElement = document.getElementById("cover-image");
 async function set_image(url) {
     fetch(url)
         .then(response => response.blob())
@@ -122,6 +122,8 @@ async function init() {
         let puzzleOrder = await get_puzzle_list();
         gameNum = puzzleOrder[days_since(new Date(2025, 12, 19))];
     }
+
+    console.log(days_since(new Date(2025, 12, 19)))
 
     gamesData = await get_games_list();
     tagsList  = await get_tags_list();

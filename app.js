@@ -56,6 +56,10 @@ function set_price(price) {
     }
 }
 
+const canvasElement = document.getElementById("canvas");
+let canvasContext = canvasElement.getContext("2d");
+let imageBitmap = null;
+
 // const imageElement = document.getElementById("cover-image");
 async function set_image(url) {
     fetch(url)
@@ -64,14 +68,11 @@ async function set_image(url) {
             // imageElement.src = URL.createObjectURL(blob);
             window.createImageBitmap(blob)
                 .then(bitmap => {
-                    let c = document.getElementById("canvas");
-                    let ctx = c.getContext("2d");
-                    ctx.filter = "blur(50px)";
-                    ctx.drawImage(bitmap, 0, 0);
-                })
-
-        })
-
+                    imageBitmap = bitmap;
+                    canvasContext.filter = "blur(50px)";
+                    canvasContext.drawImage(bitmap, 0, 0);
+                });
+        });
     // imageElement.setAttribute("src", url);
 }
 
@@ -120,10 +121,8 @@ async function init() {
 
     if (gameNum === null) {
         let puzzleOrder = await get_puzzle_list();
-        gameNum = puzzleOrder[days_since(new Date(2025, 12, 19))];
+        gameNum = puzzleOrder[days_since(new Date(2025, 11, 19))];
     }
-
-    console.log(days_since(new Date(2025, 12, 19)))
 
     gamesData = await get_games_list();
     tagsList  = await get_tags_list();
@@ -151,6 +150,7 @@ document.getElementById("submit-button").addEventListener("click", (e) => {
         answerGroup.classList += " incorrect"
     }
     answerBox.setAttribute("disabled", "true");
-    imageElement.classList = "";
+    canvasContext.filter = "none";
+    canvasContext.drawImage(imageBitmap, 0, 0);
     nameElement.innerHTML = gamesData[gameNum][0];
 });

@@ -57,8 +57,22 @@ function set_price(price) {
 }
 
 const imageElement = document.getElementById("cover-image");
-function set_image(url) {
-    imageElement.setAttribute("src", url);
+async function set_image(url) {
+    fetch(url)
+        .then(response => response.blob())
+        .then(blob => {
+            // imageElement.src = URL.createObjectURL(blob);
+            window.createImageBitmap(blob)
+                .then(bitmap => {
+                    let c = document.getElementById("canvas");
+                    let ctx = c.getContext("2d");
+                    ctx.filter = "blur(50px)";
+                    ctx.drawImage(bitmap, 0, 0);
+                })
+
+        })
+
+    // imageElement.setAttribute("src", url);
 }
 
 const dateElement = document.getElementById("date");

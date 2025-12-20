@@ -37,9 +37,16 @@
             </div>
         </div>
         <div class="buy-game-panel">
-            <div class="answer-group">
-                <div class="buy-game-text">Buy <span id="game-name"></span></div>
+            <div id="answer-group">
+                <div id="buy-game-text">Buy <span id="game-name"></span></div>
                 <input id="answer-box" type="text" placeholder="Elden Ring...">
+                <div id="suggestion-box" hidden>
+                    <ol id="suggestion-list">
+                        <li class="suggestion-item">A</li>
+                        <li class="suggestion-item">B</li>
+                        <li class="suggestion-item">C</li>
+                    </ol>
+                </div>
             </div>
             <div id="buy-group">
                 <label id="price-label">CDN$ <span id="price"></span></label>

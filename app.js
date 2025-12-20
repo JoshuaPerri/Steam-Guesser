@@ -25,7 +25,7 @@ const tagsElement = document.getElementById("tags-list");
 function set_tags(tags) {
     let tagsHTML = [];
     tags.forEach(tag => {
-        tagsHTML.push(`<li>${tag}</li>`);
+        tagsHTML.push(`<li class="tag-list-item">${tag}</li>`);
     });
     tagsElement.innerHTML = tagsHTML.join("");
 }
@@ -141,7 +141,7 @@ document.addEventListener("DOMContentLoaded", init);
 
 const answerBox = document.getElementById("answer-box");
 const nameElement = document.getElementById("name-container");
-const answerGroup = document.querySelector(".answer-group");
+const answerGroup = document.getElementById("answer-group");
 document.getElementById("submit-button").addEventListener("click", (e) => {
     let answer = answerBox.value;
     if (answer === gamesData[gameNum][0]) {
@@ -150,7 +150,85 @@ document.getElementById("submit-button").addEventListener("click", (e) => {
         answerGroup.classList += " incorrect"
     }
     answerBox.setAttribute("disabled", "true");
+    suggestionBox.setAttribute("hidden", "");
     canvasContext.filter = "none";
     canvasContext.drawImage(imageBitmap, 0, 0);
     nameElement.innerHTML = gamesData[gameNum][0];
+});
+
+function binarySearch(arr, x) {
+    let left = 0;
+    let right = arr.length - 1;
+
+    let mid = 0
+    while (left <= right) {
+        mid = Math.floor((left + right) / 2);
+
+        let compare = key(arr[mid]).substring(0, x.length).localeCompare(x);
+        if (compare == 0) {
+            break;
+        } else if (compare < 0) {
+            left = mid + 1;
+        } else {
+            right = mid - 1;
+        }
+    }
+    let next = mid;
+
+    let suggestionList = []
+    while (next >= 0) {
+        let compare = key(arr[next]).substring(0, x.length).localeCompare(x);
+        if (compare != 0) {
+            break;
+        } else {
+            suggestionList.unshift(arr[next][0]);
+            next -= 1;
+        }
+    }
+    next = mid + 1;
+    while (next < arr.length) {
+        let compare = key(arr[next]).substring(0, x.length).localeCompare(x);
+        if (compare != 0) {
+            break;
+        } else {
+            suggestionList.push(arr[next][0]);
+            next += 1;
+        }
+    }
+
+    return suggestionList;
+}
+
+function key(item) {
+    return item[0].toLowerCase();
+}
+
+const suggestionBox = document.getElementById("suggestion-box");
+const suggestionList = document.getElementById("suggestion-list");
+document.getElementById("answer-box").addEventListener("input", (e) => {
+    let answer = answerBox.value;
+    if (answer.length > 1) {
+        let suggestions = binarySearch(gamesData, answer.toLowerCase());
+        suggestionList.innerHTML = "";
+        for (let i = 0; i < Math.min(5, suggestions.length); i++) {
+
+            let listItem = document.createElement("li");
+            listItem.classList += "suggestion-item";
+
+            let button = document.createElement("button");
+            button.classList += "suggestion-button";
+            button.innerHTML += suggestions[i];
+
+            button.addEventListener("click", () => {
+                answerBox.value = suggestions[i];
+                suggestionBox.setAttribute("hidden", "");
+            });
+
+            listItem.appendChild(button);
+            suggestionList.appendChild(listItem);
+        }
+        suggestionBox.removeAttribute("hidden");
+    } else {
+        suggestionBox.setAttribute("hidden", "");
+    }
 });

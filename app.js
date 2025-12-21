@@ -44,7 +44,7 @@ const priceElement = document.getElementById("price");
 const labelElement = document.getElementById("price-label");
 function set_price(price) {
     if (price === 0) {
-        priceElement.textContent = "Free";
+        labelElement.textContent = "Free";
     } else if (price === -1) {
         labelElement.textContent = "No Longer for Sale";
     } else if (price === -2) {

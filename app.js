@@ -79,7 +79,6 @@ async function set_image(url) {
         canvasElement.setAttribute("hidden", "");
         imageElement.src = url;
     }
-    // imageElement.setAttribute("src", url);
 }
 
 function reveal_image() {
@@ -142,7 +141,7 @@ async function init() {
     gamesData = await get_games_list();
     tagsList  = await get_tags_list();
 
-    let gameData = gamesData[gameNum]
+    let gameData = gamesData[gameNum];
     set_reviews(gameData[5], gameData[4]);
     set_tags(create_tag_sublist(gameData[8], tagsList));
     set_developer(gameData[6]);
@@ -157,6 +156,7 @@ document.addEventListener("DOMContentLoaded", init);
 const answerBox = document.getElementById("answer-box");
 const nameElement = document.getElementById("name-container");
 const answerGroup = document.getElementById("answer-group");
+const buttonElement = document.getElementById("submit-button");
 document.getElementById("submit-button").addEventListener("click", (e) => {
     let answer = answerBox.value;
     if (answer === gamesData[gameNum][0]) {
@@ -168,6 +168,12 @@ document.getElementById("submit-button").addEventListener("click", (e) => {
     suggestionBox.setAttribute("hidden", "");
     reveal_image();
     nameElement.innerHTML = gamesData[gameNum][0];
+
+    // Need to add delay so that link doesn't trigger on submit click
+    setTimeout(() => {
+        buttonElement.setAttribute("href", "https://store.steampowered.com/app/" + gamesData[gameNum][1]);
+        buttonElement.innerHTML = "Go to page";
+    }, 10);
 });
 
 function binarySearch(arr, x) {

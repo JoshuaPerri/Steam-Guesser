@@ -60,20 +60,35 @@ const canvasElement = document.getElementById("canvas");
 let canvasContext = canvasElement.getContext("2d");
 let imageBitmap = null;
 
-// const imageElement = document.getElementById("cover-image");
+const imageElement = document.getElementById("cover-image");
 async function set_image(url) {
-    fetch(url)
-        .then(response => response.blob())
-        .then(blob => {
-            // imageElement.src = URL.createObjectURL(blob);
-            window.createImageBitmap(blob)
-                .then(bitmap => {
-                    imageBitmap = bitmap;
-                    canvasContext.filter = "blur(50px)";
-                    canvasContext.drawImage(bitmap, 0, 0);
-                });
-        });
+    if ("filter" in canvasContext) {
+        fetch(url)
+            .then(response => response.blob())
+            .then(blob => {
+                // imageElement.src = URL.createObjectURL(blob);
+                window.createImageBitmap(blob)
+                    .then(bitmap => {
+                        imageBitmap = bitmap;
+                        canvasContext.filter = "blur(50px)";
+                        canvasContext.drawImage(bitmap, 0, 0);
+                    });
+            });
+    } else {
+        imageElement.removeAttribute("hidden");
+        canvasElement.setAttribute("hidden", "");
+        imageElement.src = url;
+    }
     // imageElement.setAttribute("src", url);
+}
+
+function reveal_image() {
+    if ("filter" in canvasContext) {
+        canvasContext.filter = "none";
+        canvasContext.drawImage(imageBitmap, 0, 0);
+    } else {
+        imageElement.classList = "";
+    }
 }
 
 const dateElement = document.getElementById("date");
@@ -151,8 +166,7 @@ document.getElementById("submit-button").addEventListener("click", (e) => {
     }
     answerBox.setAttribute("disabled", "true");
     suggestionBox.setAttribute("hidden", "");
-    canvasContext.filter = "none";
-    canvasContext.drawImage(imageBitmap, 0, 0);
+    reveal_image();
     nameElement.innerHTML = gamesData[gameNum][0];
 });
 

@@ -281,7 +281,7 @@ function create_past_game_link(i) {
 
     let anchor = document.createElement("a");
     anchor.classList += "past-game-link";
-    anchor.href = "http://127.0.0.1:5500/?game=" + i.toString();
+    anchor.href = ".?game=" + i.toString();
     anchor.innerHTML += (i + 1).toString();
 
     listItem.appendChild(anchor);

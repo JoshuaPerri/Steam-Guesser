@@ -240,3 +240,33 @@ li.suggestion-item:nth-child(even) {
     margin-right: 5px;
     margin-left: 5px;
 }
+
+#past-game-panel {
+    background-color: #0a0f15;
+}
+
+#past-game-header {
+    margin: 0;
+    padding: 0;
+}
+
+#past-game-list {
+    list-style: none;
+    display: flex;
+    margin: 0;
+    padding: 0;
+}
+
+.past-game-list-item {
+    background-color: #30424e;
+    margin: 10px;
+    border-radius: 2px;
+}
+
+.past-game-link {
+    display: block;
+    text-align: center;
+    width: 50px;
+    text-decoration: none;
+    color: white;
+}

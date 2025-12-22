@@ -124,22 +124,34 @@ function create_tag_sublist(indexList, tagList) {
     return sublist;
 }
 
+function is_game_index_valid(i) {
+    if (i === null || Number.isNaN(i)) {
+        return false;
+    } else if (i < 0 || i > latestGameIndex) {
+        return false;
+    }
+    return true;
+}
 
 let gamesData = [];
-let tagsList = [];
 let gameNum = 0;
+let gameNumIndex = 0;
+let latestGameIndex = 0;
 async function init() {
+    latestGameIndex = days_since(new Date(2025, 11, 19));
 
     let params = new URLSearchParams(document.location.search);
-    gameNum = params.get("game");
+    gameNumIndex = parseInt(params.get("game"));
 
-    if (gameNum === null) {
-        let puzzleOrder = await get_puzzle_list();
-        gameNum = puzzleOrder[days_since(new Date(2025, 11, 19))];
+    if (!is_game_index_valid(gameNumIndex)) {
+        gameNumIndex = latestGameIndex;
     }
 
+    let puzzleOrder = await get_puzzle_list();
     gamesData = await get_games_list();
-    tagsList  = await get_tags_list();
+    let tagsList  = await get_tags_list();
+
+    gameNum = puzzleOrder[gameNumIndex];
 
     let gameData = gamesData[gameNum];
     set_reviews(gameData[5], gameData[4]);
@@ -168,6 +180,8 @@ document.getElementById("submit-button").addEventListener("click", (e) => {
     suggestionBox.setAttribute("hidden", "");
     reveal_image();
     nameElement.innerHTML = gamesData[gameNum][0];
+    populate_past_game_list();
+    pastGamePanel.removeAttribute("hidden");
 
     // Need to add delay so that link doesn't trigger on submit click
     setTimeout(() => {
@@ -252,3 +266,24 @@ document.getElementById("answer-box").addEventListener("input", (e) => {
         suggestionBox.setAttribute("hidden", "");
     }
 });
+
+const pastGamePanel= document.getElementById("past-game-panel");
+const pastGameList = document.getElementById("past-game-list");
+function populate_past_game_list() {
+    for (let i = 0; i <= latestGameIndex; i++) {
+        pastGameList.appendChild(create_past_game_link(i));
+    }
+}
+
+function create_past_game_link(i) {
+    let listItem = document.createElement("li");
+    listItem.classList += "past-game-list-item";
+
+    let anchor = document.createElement("a");
+    anchor.classList += "past-game-link";
+    anchor.href = "http://127.0.0.1:5500/?game=" + i.toString();
+    anchor.innerHTML += (i + 1).toString();
+
+    listItem.appendChild(anchor);
+    return listItem;
+}

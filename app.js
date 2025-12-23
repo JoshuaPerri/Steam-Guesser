@@ -139,6 +139,7 @@ function is_game_index_valid(i) {
 }
 
 let gamesData = [];
+let puzzleOrder = [];
 let gameNum = 0;
 let gameNumIndex = 0;
 let latestGameIndex = 0;
@@ -155,7 +156,7 @@ async function init() {
         gameNumIndex = latestGameIndex;
     }
 
-    let puzzleOrder = await get_puzzle_list();
+    puzzleOrder = await get_puzzle_list();
     gamesData = await get_games_list();
     let tagsList  = await get_tags_list();
     
@@ -222,11 +223,11 @@ submitButton.addEventListener("click", (e) => {
     suggestionBox.setAttribute("hidden", "");
     reveal_image();
     nameElement.innerHTML = gamesData[gameNum][0];
-    populate_past_game_list();
     pastGamePanel.removeAttribute("hidden");
     results.set(gameNum, result);
 
     localStorage.setItem("results", JSON.stringify(Array.from(results.entries())));
+    populate_past_game_list();
 
     // Need to add delay so that link doesn't trigger on submit click
     setTimeout(() => {
@@ -281,6 +282,36 @@ function findSuggestionList(arr, x) {
     return suggestionList;
 }
 
+// function findSuggestionList(arr, x) {
+//     let suggestionList = [""];
+//     let suggestionScores = [1000000];
+//     for (let i = 0; i < arr.length; i++) {
+//         let candidate = key(arr[i]);
+//         let candidateScore = Math.abs(candidate.localeCompare(x));
+//         let insertPosition = -1;
+
+//         console.log(candidateScore)
+//         for (let j = suggestionScores.length - 1; j >= 0; j--) {
+//             if (suggestionScores[j] > candidateScore) {
+//                 insertPosition = j;
+//             } else {
+//                 break;
+//             }
+//         }
+//         if (insertPosition != -1) {
+//             console.log(candidate)
+//             suggestionList.splice(insertPosition, 0, candidate);
+//             suggestionScores.splice(insertPosition, 0, candidateScore);
+//             if (suggestionList.length > 5) {
+//                 suggestionList = suggestionList.pop();
+//                 suggestionScores = suggestionScores.pop();
+//             }
+//         }
+//     }
+//     console.log(suggestionList)
+//     return suggestionList;
+// }
+
 answerInput.addEventListener("input", (e) => {
     let answer = answerInput.value;
     if (answer.length > 1) {
@@ -312,6 +343,14 @@ answerInput.addEventListener("input", (e) => {
 function create_past_game_link(x) {
     let listItem = document.createElement("li");
     listItem.classList += "past-game-list-item";
+
+    if (results.get(puzzleOrder[x]) != undefined) {
+        if (results.get(puzzleOrder[x]).score == 1) {
+            listItem.classList += " correct";
+        } else {
+            listItem.classList += " incorrect";
+        }
+    }
 
     let anchor = document.createElement("a");
     anchor.classList += "past-game-link";

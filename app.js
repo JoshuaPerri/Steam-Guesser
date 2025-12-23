@@ -81,6 +81,17 @@ async function set_image(url) {
     }
 }
 
+function set_image_blurred() {
+    if ("filter" in canvasContext) {
+        canvasContext.filter = "blur(50px)";
+        canvasContext.drawImage(imageBitmap, 0, 0);
+    } else {
+        imageElement.removeAttribute("hidden");
+        canvasElement.setAttribute("hidden", "");
+        imageElement.src = url;
+    }
+}
+
 function reveal_image() {
     if ("filter" in canvasContext) {
         canvasContext.filter = "none";
@@ -105,16 +116,21 @@ function days_since(start) {
 }
 
 async function get_games_list() {
-    return await (await fetch("json/games.json")).json()
+    return await (await fetch("json/games.json")).json();
 }
-
 async function get_tags_list() {
-    return await (await fetch("json/tags.json")).json()
+    return await (await fetch("json/tags.json")).json();
+}
+async function get_puzzle_list() {
+    return await (await fetch("json/order.json")).json();
+}
+async function get_image_bitmap(url) {
+    let response = await fetch(url);
+    let blob = await response.blob();
+    let bitmap = await window.createImageBitmap(blob);
+    return bitmap;
 }
 
-async function get_puzzle_list() {
-    return await (await fetch("json/order.json")).json()
-}
 
 function create_tag_sublist(indexList, tagList) {
     let sublist = [];
@@ -137,7 +153,10 @@ let gamesData = [];
 let gameNum = 0;
 let gameNumIndex = 0;
 let latestGameIndex = 0;
+let results;
 async function init() {
+
+    results = new Map(JSON.parse(localStorage.getItem("results")));
     latestGameIndex = days_since(new Date(2025, 11, 19));
 
     let params = new URLSearchParams(document.location.search);
@@ -150,6 +169,7 @@ async function init() {
     let puzzleOrder = await get_puzzle_list();
     gamesData = await get_games_list();
     let tagsList  = await get_tags_list();
+    
 
     gameNum = puzzleOrder[gameNumIndex];
 
@@ -159,8 +179,31 @@ async function init() {
     set_developer(gameData[6]);
     set_publisher(gameData[7]);
     set_price(gameData[2]);
-    set_image("https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/" + gameData[9]);
+    // set_image("https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/" + gameData[9]);
+    imageBitmap  = await get_image_bitmap("https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/" + gameData[9]);
+    set_image_blurred();
     set_date(gameData[3]);
+
+    if (results.get(gameNum) != undefined) {
+        answerBox.value = results.get(gameNum).answer;
+        if (results.get(gameNum).score === 1) {
+            answerGroup.classList += " correct"
+        } else {
+            answerGroup.classList += " incorrect"
+        }
+        answerBox.setAttribute("disabled", "true");
+        suggestionBox.setAttribute("hidden", "");
+        reveal_image();
+        nameElement.innerHTML = gamesData[gameNum][0];
+        populate_past_game_list();
+        pastGamePanel.removeAttribute("hidden");
+
+        // Need to add delay so that link doesn't trigger on submit click
+        setTimeout(() => {
+            buttonElement.setAttribute("href", "https://store.steampowered.com/app/" + gamesData[gameNum][1]);
+            buttonElement.innerHTML = "Go to page";
+        }, 10);
+    }
 }
 
 document.addEventListener("DOMContentLoaded", init);
@@ -171,10 +214,15 @@ const answerGroup = document.getElementById("answer-group");
 const buttonElement = document.getElementById("submit-button");
 document.getElementById("submit-button").addEventListener("click", (e) => {
     let answer = answerBox.value;
+    let result = {
+        "answer": answer
+    }
     if (answer === gamesData[gameNum][0]) {
-        answerGroup.classList += " correct"
+        answerGroup.classList += " correct";
+        result.score = 1;
     } else {
-        answerGroup.classList += " incorrect"
+        answerGroup.classList += " incorrect";
+        result.score = 0;
     }
     answerBox.setAttribute("disabled", "true");
     suggestionBox.setAttribute("hidden", "");
@@ -182,6 +230,9 @@ document.getElementById("submit-button").addEventListener("click", (e) => {
     nameElement.innerHTML = gamesData[gameNum][0];
     populate_past_game_list();
     pastGamePanel.removeAttribute("hidden");
+    results.set(gameNum, result);
+
+    localStorage.setItem("results", JSON.stringify(Array.from(results.entries())));
 
     // Need to add delay so that link doesn't trigger on submit click
     setTimeout(() => {
@@ -190,7 +241,7 @@ document.getElementById("submit-button").addEventListener("click", (e) => {
     }, 10);
 });
 
-function binarySearch(arr, x) {
+function findSuggestionList(arr, x) {
     let left = 0;
     let right = arr.length - 1;
 
@@ -242,7 +293,7 @@ const suggestionList = document.getElementById("suggestion-list");
 document.getElementById("answer-box").addEventListener("input", (e) => {
     let answer = answerBox.value;
     if (answer.length > 1) {
-        let suggestions = binarySearch(gamesData, answer.toLowerCase());
+        let suggestions = findSuggestionList(gamesData, answer.toLowerCase());
         suggestionList.innerHTML = "";
         for (let i = 0; i < Math.min(5, suggestions.length); i++) {
 
@@ -275,14 +326,14 @@ function populate_past_game_list() {
     }
 }
 
-function create_past_game_link(i) {
+function create_past_game_link(x) {
     let listItem = document.createElement("li");
     listItem.classList += "past-game-list-item";
 
     let anchor = document.createElement("a");
     anchor.classList += "past-game-link";
-    anchor.href = ".?game=" + i.toString();
-    anchor.innerHTML += (i + 1).toString();
+    anchor.href = ".?game=" + x.toString();
+    anchor.innerHTML += (x + 1).toString();
 
     listItem.appendChild(anchor);
     return listItem;

@@ -14,7 +14,7 @@ const reviewElement = document.getElementById("review-data");
 const answerInput = document.getElementById("answer-box");
 const nameElement = document.getElementById("name-container");
 const answerGroup = document.getElementById("answer-group");
-const buttonElement = document.getElementById("submit-button");
+const submitButton = document.getElementById("submit-button");
 const canvasContext = canvasElement.getContext("2d");
 
 const reviewThresholds = [0, 20, 40, 70, 80, 95];
@@ -188,20 +188,30 @@ async function init() {
 
         // Need to add delay so that link doesn't trigger on submit click
         setTimeout(() => {
-            buttonElement.setAttribute("href", "https://store.steampowered.com/app/" + gamesData[gameNum][1]);
-            buttonElement.innerHTML = "Go to page";
+            submitButton.setAttribute("href", "https://store.steampowered.com/app/" + gamesData[gameNum][1]);
+            submitButton.innerHTML = "Go to page";
         }, 10);
     }
 }
 
 document.addEventListener("DOMContentLoaded", init);
 
-document.getElementById("submit-button").addEventListener("click", (e) => {
+function is_guess_correct(guess) {
+    let cleanGuess = guess.replaceAll(/[^\da-zA-Z]/g, "");
+    let cleanAnswer = gamesData[gameNum][0].replaceAll(/[^\da-zA-Z]/g, "");
+
+    if (cleanGuess === cleanAnswer) {
+        return true;
+    }
+    return false;
+}
+
+submitButton.addEventListener("click", (e) => {
     let answer = answerInput.value;
     let result = {
         "answer": answer
     }
-    if (answer === gamesData[gameNum][0]) {
+    if (is_guess_correct(answer)) {
         answerGroup.classList += " correct";
         result.score = 1;
     } else {
@@ -220,11 +230,14 @@ document.getElementById("submit-button").addEventListener("click", (e) => {
 
     // Need to add delay so that link doesn't trigger on submit click
     setTimeout(() => {
-        buttonElement.setAttribute("href", "https://store.steampowered.com/app/" + gamesData[gameNum][1]);
-        buttonElement.innerHTML = "Go to page";
+        submitButton.setAttribute("href", "https://store.steampowered.com/app/" + gamesData[gameNum][1]);
+        submitButton.innerHTML = "Go to page";
     }, 10);
 });
 
+function key(item) {
+    return item[0].toLowerCase();
+}
 function findSuggestionList(arr, x) {
     let left = 0;
     let right = arr.length - 1;
@@ -268,11 +281,7 @@ function findSuggestionList(arr, x) {
     return suggestionList;
 }
 
-function key(item) {
-    return item[0].toLowerCase();
-}
-
-document.getElementById("answer-box").addEventListener("input", (e) => {
+answerInput.addEventListener("input", (e) => {
     let answer = answerInput.value;
     if (answer.length > 1) {
         let suggestions = findSuggestionList(gamesData, answer.toLowerCase());
@@ -300,13 +309,6 @@ document.getElementById("answer-box").addEventListener("input", (e) => {
     }
 });
 
-
-function populate_past_game_list() {
-    for (let i = 0; i <= latestGameIndex; i++) {
-        pastGameList.appendChild(create_past_game_link(i));
-    }
-}
-
 function create_past_game_link(x) {
     let listItem = document.createElement("li");
     listItem.classList += "past-game-list-item";
@@ -318,4 +320,9 @@ function create_past_game_link(x) {
 
     listItem.appendChild(anchor);
     return listItem;
+}
+function populate_past_game_list() {
+    for (let i = 0; i <= latestGameIndex; i++) {
+        pastGameList.appendChild(create_past_game_link(i));
+    }
 }

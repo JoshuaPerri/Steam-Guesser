@@ -11,10 +11,11 @@ const publisherElement = document.getElementById("publisher");
 const developerElement = document.getElementById("developer");
 const tagsElement = document.getElementById("tags-list");
 const reviewElement = document.getElementById("review-data");
-const answerBox = document.getElementById("answer-box");
+const answerInput = document.getElementById("answer-box");
 const nameElement = document.getElementById("name-container");
 const answerGroup = document.getElementById("answer-group");
 const buttonElement = document.getElementById("submit-button");
+const canvasContext = canvasElement.getContext("2d");
 
 const reviewThresholds = [0, 20, 40, 70, 80, 95];
 const reviewScores = [
@@ -25,6 +26,9 @@ const reviewScores = [
     "Very Positive",
     "Overwhelmingly Positive",
 ];
+const options = {year: 'numeric', month: 'long', day: 'numeric'};
+
+let imageBitmap = null;
 
 function set_reviews(percent, total) {
     for (let i=0; i < reviewThresholds.length-1; i++) {
@@ -68,29 +72,6 @@ function set_price(price) {
     }
 }
 
-let canvasContext = canvasElement.getContext("2d");
-let imageBitmap = null;
-
-async function set_image(url) {
-    if ("filter" in canvasContext) {
-        fetch(url)
-            .then(response => response.blob())
-            .then(blob => {
-                // imageElement.src = URL.createObjectURL(blob);
-                window.createImageBitmap(blob)
-                    .then(bitmap => {
-                        imageBitmap = bitmap;
-                        canvasContext.filter = "blur(50px)";
-                        canvasContext.drawImage(bitmap, 0, 0);
-                    });
-            });
-    } else {
-        imageElement.removeAttribute("hidden");
-        canvasElement.setAttribute("hidden", "");
-        imageElement.src = url;
-    }
-}
-
 function set_image_blurred() {
     if ("filter" in canvasContext) {
         canvasContext.filter = "blur(50px)";
@@ -111,7 +92,6 @@ function reveal_image() {
     }
 }
 
-const options = {year: 'numeric', month: 'long', day: 'numeric'};
 function set_date(dateString) {
     let date = new Date(dateString);
     dateElement.textContent = date.toLocaleString("en-US", options);
@@ -188,19 +168,18 @@ async function init() {
     set_developer(gameData[6]);
     set_publisher(gameData[7]);
     set_price(gameData[2]);
-    // set_image("https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/" + gameData[9]);
     imageBitmap  = await get_image_bitmap("https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/" + gameData[9]);
     set_image_blurred();
     set_date(gameData[3]);
 
     if (results.get(gameNum) != undefined) {
-        answerBox.value = results.get(gameNum).answer;
+        answerInput.value = results.get(gameNum).answer;
         if (results.get(gameNum).score === 1) {
             answerGroup.classList += " correct"
         } else {
             answerGroup.classList += " incorrect"
         }
-        answerBox.setAttribute("disabled", "true");
+        answerInput.setAttribute("disabled", "true");
         suggestionBox.setAttribute("hidden", "");
         reveal_image();
         nameElement.innerHTML = gamesData[gameNum][0];
@@ -218,7 +197,7 @@ async function init() {
 document.addEventListener("DOMContentLoaded", init);
 
 document.getElementById("submit-button").addEventListener("click", (e) => {
-    let answer = answerBox.value;
+    let answer = answerInput.value;
     let result = {
         "answer": answer
     }
@@ -229,7 +208,7 @@ document.getElementById("submit-button").addEventListener("click", (e) => {
         answerGroup.classList += " incorrect";
         result.score = 0;
     }
-    answerBox.setAttribute("disabled", "true");
+    answerInput.setAttribute("disabled", "true");
     suggestionBox.setAttribute("hidden", "");
     reveal_image();
     nameElement.innerHTML = gamesData[gameNum][0];
@@ -294,7 +273,7 @@ function key(item) {
 }
 
 document.getElementById("answer-box").addEventListener("input", (e) => {
-    let answer = answerBox.value;
+    let answer = answerInput.value;
     if (answer.length > 1) {
         let suggestions = findSuggestionList(gamesData, answer.toLowerCase());
         suggestionList.innerHTML = "";
@@ -308,7 +287,7 @@ document.getElementById("answer-box").addEventListener("input", (e) => {
             button.innerHTML += suggestions[i];
 
             button.addEventListener("click", () => {
-                answerBox.value = suggestions[i];
+                answerInput.value = suggestions[i];
                 suggestionBox.setAttribute("hidden", "");
             });
 

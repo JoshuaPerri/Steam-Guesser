@@ -11,7 +11,7 @@ body {
 }
 
 .center {
-    width: 800px;
+    width: 820px;
     background-color: #0a0f15;
 }
 
@@ -75,7 +75,7 @@ body {
 
 .buy-game-panel {
     position: relative;
-    width: 800px;
+    width: 820px;
     height: 80px;
     border-radius: 5px;
     background: linear-gradient( -60deg, rgba(226,244,255,0.3) 5%,rgba(84, 107, 115, 0.3) 95%);
@@ -103,7 +103,8 @@ body {
 .details-item {
     display: grid;
     grid-template-columns: 1fr 1.5fr;
-    grid-template-rows: 1fr 1fr;
+    grid-template-rows: auto auto;
+    row-gap: 10px;
 }
 
 #instructions-item {

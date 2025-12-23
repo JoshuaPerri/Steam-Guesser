@@ -1,3 +1,21 @@
+const suggestionBox = document.getElementById("suggestion-box");
+const suggestionList = document.getElementById("suggestion-list");
+const pastGamePanel= document.getElementById("past-game-panel");
+const pastGameList = document.getElementById("past-game-list");
+const dateElement = document.getElementById("date");
+const imageElement = document.getElementById("cover-image");
+const canvasElement = document.getElementById("canvas");
+const priceElement = document.getElementById("price");
+const labelElement = document.getElementById("price-label");
+const publisherElement = document.getElementById("publisher");
+const developerElement = document.getElementById("developer");
+const tagsElement = document.getElementById("tags-list");
+const reviewElement = document.getElementById("review-data");
+const answerBox = document.getElementById("answer-box");
+const nameElement = document.getElementById("name-container");
+const answerGroup = document.getElementById("answer-group");
+const buttonElement = document.getElementById("submit-button");
+
 const reviewThresholds = [0, 20, 40, 70, 80, 95];
 const reviewScores = [
     "Overwhelmingly Negative",
@@ -8,7 +26,6 @@ const reviewScores = [
     "Overwhelmingly Positive",
 ];
 
-const reviewElement = document.getElementById("review-data")
 function set_reviews(percent, total) {
     for (let i=0; i < reviewThresholds.length-1; i++) {
         if (percent >= reviewThresholds[i] && percent < reviewThresholds[i+1]) {
@@ -21,7 +38,6 @@ function set_reviews(percent, total) {
     }
 }
 
-const tagsElement = document.getElementById("tags-list");
 function set_tags(tags) {
     let tagsHTML = [];
     tags.forEach(tag => {
@@ -30,18 +46,14 @@ function set_tags(tags) {
     tagsElement.innerHTML = tagsHTML.join("");
 }
 
-const developerElement = document.getElementById("developer");
 function set_developer(developer) {
     developerElement.textContent = developer;
 }
 
-const publisherElement = document.getElementById("publisher");
 function set_publisher(publisher) {
     publisherElement.textContent = publisher;
 }
 
-const priceElement = document.getElementById("price");
-const labelElement = document.getElementById("price-label");
 function set_price(price) {
     if (price === 0) {
         labelElement.textContent = "Free";
@@ -56,11 +68,9 @@ function set_price(price) {
     }
 }
 
-const canvasElement = document.getElementById("canvas");
 let canvasContext = canvasElement.getContext("2d");
 let imageBitmap = null;
 
-const imageElement = document.getElementById("cover-image");
 async function set_image(url) {
     if ("filter" in canvasContext) {
         fetch(url)
@@ -101,7 +111,6 @@ function reveal_image() {
     }
 }
 
-const dateElement = document.getElementById("date");
 const options = {year: 'numeric', month: 'long', day: 'numeric'};
 function set_date(dateString) {
     let date = new Date(dateString);
@@ -208,10 +217,6 @@ async function init() {
 
 document.addEventListener("DOMContentLoaded", init);
 
-const answerBox = document.getElementById("answer-box");
-const nameElement = document.getElementById("name-container");
-const answerGroup = document.getElementById("answer-group");
-const buttonElement = document.getElementById("submit-button");
 document.getElementById("submit-button").addEventListener("click", (e) => {
     let answer = answerBox.value;
     let result = {
@@ -288,8 +293,6 @@ function key(item) {
     return item[0].toLowerCase();
 }
 
-const suggestionBox = document.getElementById("suggestion-box");
-const suggestionList = document.getElementById("suggestion-list");
 document.getElementById("answer-box").addEventListener("input", (e) => {
     let answer = answerBox.value;
     if (answer.length > 1) {
@@ -318,8 +321,7 @@ document.getElementById("answer-box").addEventListener("input", (e) => {
     }
 });
 
-const pastGamePanel= document.getElementById("past-game-panel");
-const pastGameList = document.getElementById("past-game-list");
+
 function populate_past_game_list() {
     for (let i = 0; i <= latestGameIndex; i++) {
         pastGameList.appendChild(create_past_game_link(i));

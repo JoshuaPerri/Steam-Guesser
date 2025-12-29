@@ -79,7 +79,7 @@ function set_image_blurred() {
     } else {
         imageElement.removeAttribute("hidden");
         canvasElement.setAttribute("hidden", "");
-        imageElement.src = url;
+        imageElement.setAttribute("src", url);
     }
 }
 

@@ -72,7 +72,7 @@ function set_price(price) {
     }
 }
 
-function set_image_blurred() {
+function set_image_blurred(url) {
     if ("filter" in canvasContext) {
         canvasContext.filter = "blur(50px)";
         canvasContext.drawImage(imageBitmap, 0, 0);
@@ -170,7 +170,7 @@ async function init() {
     set_publisher(gameData[7]);
     set_price(gameData[2]);
     imageBitmap  = await get_image_bitmap("https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/" + gameData[9]);
-    set_image_blurred();
+    set_image_blurred("https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/" + gameData[9]);
     set_date(gameData[3]);
 
     if (results.get(gameNum) != undefined) {

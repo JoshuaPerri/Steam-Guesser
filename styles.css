@@ -244,6 +244,7 @@ li.suggestion-item:nth-child(even) {
 
 #past-game-panel {
     background-color: #0a0f15;
+    max-width: 820px;
 }
 
 #past-game-header {
@@ -256,6 +257,7 @@ li.suggestion-item:nth-child(even) {
     display: flex;
     margin: 0;
     padding: 0;
+    flex-wrap: wrap;
 }
 
 .past-game-list-item {
